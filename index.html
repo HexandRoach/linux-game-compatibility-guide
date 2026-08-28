@@ -983,255 +983,273 @@
   </div>
 
   <script>
-    const modals = document.querySelectorAll(".modal");
+  const modals = document.querySelectorAll(".modal");
 
-    function openModal(id) {
-      const modal = document.getElementById(id);
+  function openModal(id) {
+    const modal = document.getElementById(id);
 
-      if (!modal) {
-        return;
-      }
+    if (!modal) return;
 
-      modal.classList.add("show");
-      modal.setAttribute("aria-hidden", "false");
-      document.body.classList.add("modal-open");
-    }
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  }
 
-    function closeModal(modal) {
-      if (!modal) {
-        return;
-      }
+  function closeModal(modal) {
+    if (!modal) return;
 
-      modal.classList.remove("show");
-      modal.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("modal-open");
-    }
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  }
 
-    document.querySelectorAll("[data-open]").forEach((button) => {
-      button.addEventListener("click", (event) => {
-        event.preventDefault();
-        openModal(button.dataset.open);
-      });
+  document.querySelectorAll("[data-open]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      openModal(button.dataset.open);
     });
+  });
 
-    document.querySelectorAll("[data-close]").forEach((button) => {
-      button.addEventListener("click", () => {
-        closeModal(button.closest(".modal"));
-      });
+  document.querySelectorAll("[data-close]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      closeModal(button.closest(".modal"));
     });
+  });
 
-    modals.forEach((modal) => {
-      modal.addEventListener("click", (event) => {
-        if (event.target === modal) {
+  modals.forEach((modal) => {
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        closeModal(modal);
+      }
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      modals.forEach((modal) => {
+        if (modal.classList.contains("show")) {
           closeModal(modal);
         }
       });
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        modals.forEach(closeModal);
-      }
-    });
-
-    const alphabetButtons = document.querySelectorAll("[data-letter]");
-    const librarySections = document.querySelectorAll("[data-letter-section]");
-    const librarySummary = document.getElementById("library-summary");
-
-    function showLibraryLetter(letter) {
-      librarySections.forEach((section) => {
-        const shouldShow = letter === "all" || section.dataset.letterSection === letter;
-        section.hidden = !shouldShow;
-      });
-
-      if (librarySummary) {
-        librarySummary.textContent = letter === "all"
-          ? "Showing all currently verified reports."
-          : `Showing verified reports beginning with the letter ${letter}.`;
-      }
     }
+  });
 
-    alphabetButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const letter = button.dataset.letter;
+  const alphabetButtons = document.querySelectorAll("[data-letter]");
+  const librarySections = document.querySelectorAll("[data-letter-section]");
+  const librarySummary = document.getElementById("library-summary");
 
-        alphabetButtons.forEach((item) => {
-          item.classList.remove("active");
-        });
-
-        button.classList.add("active");
-        showLibraryLetter(letter);
-      });
+  function showLibraryLetter(letter) {
+    librarySections.forEach((section) => {
+      const shouldShow = letter === "all" || section.dataset.letterSection === letter;
+      section.hidden = !shouldShow;
     });
 
-            showLibraryLetter("all");
+    if (librarySummary) {
+      librarySummary.textContent = letter === "all"
+        ? "Showing all currently verified reports."
+        : `Showing verified reports beginning with the letter ${letter}.`;
+    }
+  }
+
+  alphabetButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      alphabetButtons.forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+      showLibraryLetter(button.dataset.letter);
+    });
+  });
+
+  showLibraryLetter("all");
+</script>
+
   </script>
 
-  <div class="modal" id="submit-modal" aria-hidden="true">
-    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="submit-title">
-      <header class="modal-header">
-        <div>
-          <p class="eyebrow">Community submissions</p>
-          <h2 id="submit-title">Add a game listing</h2>
-          <p>Share your Linux or Steam Deck compatibility results.</p>
+<div
+  class="modal"
+  id="submit-modal"
+  aria-hidden="true"
+  onclick="if (event.target === this) { this.classList.remove('show'); this.setAttribute('aria-hidden', 'true'); document.body.classList.remove('modal-open'); }"
+>
+  <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="submit-title">
+    <header class="modal-header">
+      <div>
+        <p class="eyebrow">Community submissions</p>
+        <h2 id="submit-title">Add a game listing</h2>
+        <p>Share your Linux or Steam Deck compatibility results.</p>
+      </div>
+
+      <button
+  class="close-button"
+  type="button"
+  aria-label="Close"
+  onclick="document.getElementById('submit-modal').classList.remove('show'); document.getElementById('submit-modal').setAttribute('aria-hidden', 'true'); document.body.classList.remove('modal-open');"
+>×</button>
+
+    </header>
+
+    <form id="test-form">
+      <div class="form-grid">
+        <div class="field">
+          <label for="game-name">Game title</label>
+          <input id="game-name" required placeholder="Example: Hades II">
         </div>
 
-        <button class="close-button" type="button" data-close aria-label="Close">×</button>
-      </header>
-
-      <form id="test-form">
-        <div class="form-grid">
-          <div class="field">
-            <label for="game-name">Game title</label>
-            <input id="game-name" required placeholder="Example: Hades II">
-          </div>
-
-          <div class="field">
-            <label for="store">Store or launcher</label>
-            <select id="store" required>
-              <option value="">Choose one</option>
-              <option>Steam</option>
-              <option>Epic Games Store</option>
-              <option>GOG</option>
-              <option>Battle.net</option>
-              <option>EA App</option>
-              <option>Ubisoft Connect</option>
-              <option>Other</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="distro">Distribution or device</label>
-            <input id="distro" placeholder="Example: Fedora 42 / Steam Deck OLED">
-          </div>
-
-          <div class="field">
-            <label for="proton">Proton or Wine version</label>
-            <input id="proton" placeholder="Example: Proton Experimental">
-          </div>
-
-          <div class="field">
-            <label for="status">Compatibility status</label>
-            <select id="status" required>
-              <option value="">Choose one</option>
-              <option>Excellent</option>
-              <option>Playable</option>
-              <option>Limited</option>
-              <option>Unsupported</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="tested-date">Date tested</label>
-            <input id="tested-date" type="date">
-          </div>
-
-          <div class="field full">
-            <label for="launch-options">Launch options</label>
-            <input id="launch-options" placeholder="Example: PROTON_ENABLE_WAYLAND=0 %command%">
-          </div>
-
-          <div class="field full">
-            <label for="notes">Notes, fixes, and known issues</label>
-            <textarea id="notes" placeholder="Explain the setup, what works, and remaining problems."></textarea>
-          </div>
+        <div class="field">
+          <label for="store">Store or launcher</label>
+          <select id="store" required>
+            <option value="">Choose one</option>
+            <option>Steam</option>
+            <option>Epic Games Store</option>
+            <option>GOG</option>
+            <option>Battle.net</option>
+            <option>EA App</option>
+            <option>Ubisoft Connect</option>
+            <option>Other</option>
+          </select>
         </div>
 
-        <div class="form-actions">
-          <button class="button secondary" type="button" data-close>Cancel</button>
-          <button class="button primary" type="submit">Submit test result</button>
+        <div class="field">
+          <label for="distro">Distribution or device</label>
+          <input id="distro" placeholder="Example: Fedora 42 / Steam Deck OLED">
         </div>
 
-        <div class="success-message" id="success-message" role="status">
-          Thanks—this is currently a local preview. Connect a form service or GitHub Issues before relying on it for real submissions.
+        <div class="field">
+          <label for="proton">Proton or Wine version</label>
+          <input id="proton" placeholder="Example: Proton Experimental">
         </div>
-      </form>
-    </section>
-  </div>
 
-  <script>
-    const modals = document.querySelectorAll(".modal");
+        <div class="field">
+          <label for="status">Compatibility status</label>
+          <select id="status" required>
+            <option value="">Choose one</option>
+            <option>Excellent</option>
+            <option>Playable</option>
+            <option>Limited</option>
+            <option>Unsupported</option>
+          </select>
+        </div>
 
-    function openModal(id) {
-      const modal = document.getElementById(id);
+        <div class="field">
+          <label for="tested-date">Date tested</label>
+          <input id="tested-date" type="date">
+        </div>
 
-      if (!modal) {
-        return;
-      }
+        <div class="field full">
+          <label for="launch-options">Launch options</label>
+          <input id="launch-options" placeholder="Example: PROTON_ENABLE_WAYLAND=0 %command%">
+        </div>
 
-      modal.classList.add("show");
-      modal.setAttribute("aria-hidden", "false");
-      document.body.classList.add("modal-open");
+        <div class="field full">
+          <label for="notes">Notes, fixes, and known issues</label>
+          <textarea id="notes" placeholder="Explain the setup, what works, and remaining problems."></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button
+  class="button secondary"
+  type="button"
+  onclick="document.getElementById('submit-modal').classList.remove('show'); document.getElementById('submit-modal').setAttribute('aria-hidden', 'true'); document.body.classList.remove('modal-open');"
+>Cancel</button>
+        <button class="button primary" type="submit">Submit test result</button>
+      </div>
+
+      <div class="success-message" id="success-message" role="status">
+        Thanks—this is currently a local preview. Connect a form service or GitHub Issues before relying on it for real submissions.
+      </div>
+    </form>
+  </section>
+</div>
+
+<script>
+  function openModal(id) {
+    const modal = document.getElementById(id);
+
+    if (!modal) {
+      return;
     }
 
-    function closeModal(modal) {
-      if (!modal) {
-        return;
-      }
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  }
 
-      modal.classList.remove("show");
-      modal.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("modal-open");
+  function closeModal(modal) {
+    if (!modal) {
+      return;
     }
 
-    document.querySelectorAll("[data-open]").forEach((button) => {
-      button.addEventListener("click", (event) => {
-        event.preventDefault();
-        openModal(button.dataset.open);
-      });
-    });
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  }
 
-    document.querySelectorAll("[data-close]").forEach((button) => {
-      button.addEventListener("click", () => {
-        closeModal(button.closest(".modal"));
-      });
-    });
+  document.addEventListener("click", (event) => {
+    const clickedElement = event.target instanceof Element ? event.target : null;
 
-    modals.forEach((modal) => {
-      modal.addEventListener("click", (event) => {
-        if (event.target === modal) {
-          closeModal(modal);
-        }
-      });
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        modals.forEach(closeModal);
-      }
-    });
-
-    const alphabetButtons = document.querySelectorAll("[data-letter]");
-    const librarySections = document.querySelectorAll("[data-letter-section]");
-    const librarySummary = document.getElementById("library-summary");
-
-    function showLibraryLetter(letter) {
-      librarySections.forEach((section) => {
-        const shouldShow = letter === "all" || section.dataset.letterSection === letter;
-        section.hidden = !shouldShow;
-      });
-
-      if (librarySummary) {
-        librarySummary.textContent = letter === "all"
-          ? "Showing all currently verified reports."
-          : `Showing verified reports beginning with the letter ${letter}.`;
-      }
+    if (!clickedElement) {
+      return;
     }
 
-    alphabetButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const letter = button.dataset.letter;
+    const openButton = clickedElement.closest("[data-open]");
 
-        alphabetButtons.forEach((item) => {
-          item.classList.remove("active");
-        });
+    if (openButton) {
+      event.preventDefault();
+      openModal(openButton.dataset.open);
+      return;
+    }
 
-        button.classList.add("active");
-        showLibraryLetter(letter);
+    const closeButton = clickedElement.closest("[data-close]");
+
+    if (closeButton) {
+      event.preventDefault();
+      closeModal(closeButton.closest(".modal"));
+      return;
+    }
+
+    if (clickedElement.classList.contains("modal")) {
+      closeModal(clickedElement);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      document.querySelectorAll(".modal.show").forEach((modal) => {
+        closeModal(modal);
       });
+    }
+  });
+
+  const alphabetButtons = document.querySelectorAll("[data-letter]");
+  const librarySections = document.querySelectorAll("[data-letter-section]");
+  const librarySummary = document.getElementById("library-summary");
+
+  function showLibraryLetter(letter) {
+    librarySections.forEach((section) => {
+      const shouldShow = letter === "all" || section.dataset.letterSection === letter;
+      section.hidden = !shouldShow;
     });
 
-    showLibraryLetter("all");
-  </script>
+    if (librarySummary) {
+      librarySummary.textContent = letter === "all"
+        ? "Showing all currently verified reports."
+        : `Showing verified reports beginning with the letter ${letter}.`;
+    }
+  }
+
+  alphabetButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      alphabetButtons.forEach((item) => {
+        item.classList.remove("active");
+      });
+
+      button.classList.add("active");
+      showLibraryLetter(button.dataset.letter);
+    });
+  });
+
+  showLibraryLetter("all");
+</script>
 </body>
 </html>
