@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Community-tested Proton versions, Linux game fixes, and launch options.">
+  <title>Linux Gaming — Proton Fixes & Compatibility</title>
+
+  <style>
+    :root {
+      --page-blue: #10225f;
+      --page-purple: #54239b;
+      --surface: #090a15;
+      --text: #f8f8ff;
+      --muted: #aeb1ca;
+      --purple: #9148ff;
+      --violet: #c062ff;
+      --cyan: #37ead9;
+      --green: #68e3a1;
+      --amber: #ffc869;
+      --line: rgba(194, 179, 255, .18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      padding: 44px 24px;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 14% 8%, rgba(70, 165, 255, .44), transparent 29rem),
+        radial-gradient(circle at 87% 85%, rgba(196, 62, 255, .46), transparent 34rem),
+        linear-gradient(135deg, var(--page-blue), #32216f 50%, var(--page-purple));
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    .site-shell {
+      width: min(1290px, 100%);
+      min-height: calc(100vh - 88px);
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid rgba(220, 213, 255, .16);
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: 0 35px 85px rgba(4, 2, 30, .52), 0 0 44px rgba(110, 73, 255, .16);
+    }
+
+    .topbar {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 0 42px;
+      background: linear-gradient(90deg, rgba(18, 20, 43, .98), rgba(23, 17, 45, .96));
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.15rem;
+      font-weight: 850;
+      letter-spacing: -.045em;
+    }
+
+    .brand-mark {
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      color: #0b0c18;
+      font-size: 1rem;
+      font-weight: 950;
+      background: linear-gradient(145deg, var(--cyan), #65a3ff 42%, var(--violet) 75%);
+      clip-path: polygon(50% 0, 100% 100%, 73% 100%, 50% 57%, 27% 100%, 0 100%);
+      filter: drop-shadow(0 0 12px rgba(88, 236, 215, .45));
+    }
+
+    .brand span { color: #cfbdff; }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      margin-left: auto;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .88rem;
+    }
+
+    nav a:hover,
+    nav a.active { color: white; }
+
+    .community-button {
+      padding: 11px 18px;
+      border: 1px solid rgba(210, 195, 255, .25);
+      border-radius: 11px;
+      color: white;
+      background: rgba(139, 69, 255, .15);
+      text-decoration: none;
+      font-size: .86rem;
+      font-weight: 750;
+      transition: .2s ease;
+    }
+
+    .community-button:hover {
+      transform: translateY(-2px);
+      background: rgba(139, 69, 255, .30);
+    }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      min-height: calc(100vh - 170px);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: 78px 32px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at 50% 71%, rgba(108, 50, 245, .43), transparent 32%),
+        radial-gradient(ellipse at 50% 95%, rgba(26, 131, 203, .29), transparent 43%),
+        linear-gradient(180deg, #090a16 0%, #0a0b18 62%, #0f1021 100%);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      z-index: -2;
+      bottom: -195px;
+      left: 50%;
+      width: 800px;
+      height: 490px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse, rgba(159, 74, 255, .58), rgba(75, 114, 255, .22) 40%, transparent 70%);
+      filter: blur(4px);
+      animation: breathe 5.5s ease-in-out infinite;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      opacity: .24;
+      background-image: radial-gradient(rgba(218, 207, 255, .52) .55px, transparent .55px);
+      background-size: 18px 18px;
+      mask-image: linear-gradient(to bottom, transparent 5%, black 30%, transparent 83%);
+    }
+
+    .orbit {
+      position: absolute;
+      z-index: -1;
+      width: 470px;
+      height: 470px;
+      border: 1px solid rgba(193, 158, 255, .10);
+      border-radius: 50%;
+      box-shadow: inset 0 0 55px rgba(125, 73, 255, .06);
+      animation: spin 24s linear infinite;
+    }
+
+    .orbit::before,
+    .orbit::after {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .orbit::before {
+      top: 42px;
+      left: 52px;
+      background: var(--cyan);
+      box-shadow: 0 0 18px 5px rgba(55, 234, 217, .42);
+    }
+
+    .orbit::after {
+      right: 57px;
+      bottom: 59px;
+      background: var(--violet);
+      box-shadow: 0 0 18px 5px rgba(192, 98, 255, .42);
+    }
+
+    .hero-content { max-width: 810px; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: #dccfff;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 15px var(--green);
+    }
+
+    h1 {
+      margin: 0 auto;
+      font-size: clamp(2.65rem, 5.3vw, 5.3rem);
+      line-height: .97;
+      letter-spacing: -.07em;
+    }
+
+    h1 em {
+      color: var(--violet);
+      font-style: normal;
+      text-shadow: 0 0 31px rgba(183, 81, 255, .48);
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: 24px auto 32px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 49px;
+      padding: 0 23px;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      color: white;
+      font: inherit;
+      font-size: .9rem;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .button.primary {
+      background: linear-gradient(105deg, #7638e9, #a947ff);
+      box-shadow: 0 14px 30px rgba(132, 54, 255, .31);
+    }
+
+    .button.primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 42px rgba(151, 59, 255, .48);
+    }
+
+    .button.secondary {
+      border-color: rgba(214, 204, 255, .22);
+      background: rgba(255, 255, 255, .055);
+    }
+
+    .button.secondary:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, .11);
+    }
+
+    .quick-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      padding: 10px 14px;
+      border: 1px solid rgba(192, 177, 255, .15);
+      border-radius: 99px;
+      color: #c7cadf;
+      background: rgba(11, 12, 28, .55);
+      font-size: .77rem;
+    }
+
+    .quick-status strong { color: #efeaff; }
+
+    .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 0 rgba(104, 227, 161, .65);
+      animation: pulse 1.9s infinite;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 19px 38px;
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      color: #7d819c;
+      background: #080911;
+      font-size: .77rem;
+    }
+
+    footer a {
+      color: #c3a8ff;
+      text-decoration: none;
+    }
+
+    .modal {
+      position: fixed;
+      z-index: 50;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(3, 4, 14, .78);
+      backdrop-filter: blur(8px);
+      transition: opacity .22s ease;
+    }
+
+    .modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-panel {
+      width: min(1040px, 100%);
+      max-height: min(780px, calc(100vh - 44px));
+      overflow: auto;
+      padding: 27px;
+      border: 1px solid rgba(203, 186, 255, .20);
+      border-radius: 20px;
+      background: linear-gradient(145deg, #17182d, #0d0e1b 72%);
+      box-shadow: 0 28px 85px rgba(0, 0, 0, .52), 0 0 48px rgba(120, 64, 255, .15);
+      transform: translateY(15px) scale(.985);
+      transition: transform .22s ease;
+    }
+
+    .modal.show .modal-panel {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 23px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2.15rem);
+      letter-spacing: -.05em;
+    }
+
+    .modal-header p {
+      max-width: 610px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: .9rem;
+    }
+
+    .close-button {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(210, 195, 255, .18);
+      border-radius: 10px;
+      color: #ece8ff;
+      background: rgba(255, 255, 255, .05);
+      font-size: 1.45rem;
+      cursor: pointer;
+    }
+
+    .browse-toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 53px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: rgba(6, 7, 17, .7);
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: white;
+      background: transparent;
+    }
+
+    .status-select {
+      min-height: 53px;
+      padding: 0 15px;
+      border: 1px solid rgba(192, 172, 255, .25);
+      border-radius: 13px;
+      color: #e9e1ff;
+      background: #211343;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .game-card {
+      min-height: 208px;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      padding: 18px;
+      border: 1px solid rgba(195, 181, 255, .16);
+      border-radius: 16px;
+      background: linear-gradient(145deg, #2b274d, #111325);
+    }
+
+    .game-card h3 {
+      margin: 11px 0 6px;
+      font-size: 1.24rem;
+    }
+
+    .game-card p {
+      margin: 0;
+      color: #c5c7db;
+      font-size: .79rem;
+      line-height: 1.45;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      align-self: start;
+      gap: 6px;
+      padding: 6px 9px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 99px;
+      background: rgba(10,11,22,.75);
+      font-size: .7rem;
+      font-weight: 800;
+    }
+
+    .badge .dot {
+      width: 6px;
+      height: 6px;
+      margin: 0;
+      border-radius: 50%;
+      background: var(--amber);
+    }
+
+    .badge.green .dot { background: var(--green); }
+
+    .game-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 15px;
+      color: #c8b4ff;
+      font-size: .72rem;
+      font-weight: 750;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      color: #d8d9ec;
+      font-size: .79rem;
+      font-weight: 750;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 46px;
+      padding: 11px 12px;
+      border: 1px solid rgba(191, 177, 255, .19);
+      border-radius: 10px;
+      outline: none;
+      color: #f5f2ff;
+      background: rgba(7, 8, 19, .68);
+      font: inherit;
+      font-size: .88rem;
+    }
+
+    textarea {
+      min-height: 94px;
+      resize: vertical;
+    }
+
+    .form-note {
+      margin: 18px 0 0;
+      color: #8e92ab;
+      font-size: .77rem;
+      line-height: 1.5;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 19px;
+    }
+
+    .success-message {
+      display: none;
+      margin-top: 17px;
+      padding: 12px 14px;
+      border: 1px solid rgba(104, 227, 161, .28);
+      border-radius: 10px;
+      color: #c9ffe4;
+      background: rgba(46, 152, 101, .13);
+      font-size: .85rem;
+    }
+
+    .success-message.show { display: block; }
+
+    @keyframes breathe {
+      50% { transform: translateX(-50%) scale(1.09); opacity: .86; }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      70% { box-shadow: 0 0 0 8px rgba(104, 227, 161, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(104, 227, 161, 0); }
+    }
+
+    @media (max-width: 860px) {
+      body { padding: 16px; }
+      .site-shell { min-height: calc(100vh - 32px); border-radius: 21px; }
+      .topbar { min-height: 72px; padding: 15px 22px; }
+      nav { display: none; }
+      .community-button { margin-left: auto; padding: 10px 13px; }
+      .hero { min-height: calc(100vh - 142px); padding: 75px 24px; }
+      footer { padding: 17px 22px; }
+      .game-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 580px) {
+      .brand { font-size: 1rem; }
+      .community-button { font-size: .76rem; }
+      .hero p { font-size: .91rem; }
+      .actions { display: grid; width: min(310px, 100%); margin: 0 auto; }
+      .button { width: 100%; }
+      footer { align-items: flex-start; flex-direction: column; }
+      .modal { padding: 10px; }
+      .modal-panel { padding: 20px 16px; border-radius: 16px; }
+      .browse-toolbar,
+      .game-grid,
+      .form-grid { grid-template-columns: 1fr; }
+      .form-actions { flex-direction: column-reverse; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="#home">
+        <span class="brand-mark">L</span>
+        LINUX <span>GAMING</span>
+      </a>
+
+      <nav>
+        <a class="active" href="#home">Home</a>
+        <a href="#status-guide">Status guide</a>
+        <a href="#contribute" data-open="submit-modal">Contribute</a>
+      </nav>
+
+      <a class="community-button" href="https://discord.gg/" target="_blank" rel="noopener noreferrer">
+        Join the community ↗
+      </a>
+    </header>
+
+    <section class="hero" id="home">
+      <div class="orbit"></div>
+
+      <div class="hero-content">
+        <div class="eyebrow">Community-tested Linux gaming</div>
+
+        <h1>
+          Your games.<br>
+          <em>Your Linux setup.</em><br>
+          Working together.
+        </h1>
+
+        <p>
+          Find practical Proton versions, launch options, anti-cheat notes,
+          and community-tested fixes—without digging through dozens of forum posts.
+        </p>
+
+        <div class="actions">
+          <button class="button primary" type="button" data-open="browse-modal">
+            Browse compatible games →
+          </button>
+
+          <button class="button secondary" type="button" data-open="submit-modal">
+            Submit a game test
+          </button>
+        </div>
+
+        <div class="quick-status" id="status-guide">
+          <span class="pulse"></span>
+          <span><strong>Community database in progress.</strong> New tests and fixes are being added.</span>
+        </div>
+      </div>
+    </section>
+
+    <footer id="contribute">
+      <span>© 2026 HexandRoach · <a href="LICENSE">MIT Licensed</a></span>
+      <span>Compatibility can change after game, Proton, driver, or anti-cheat updates.</span>
+    </footer>
+  </main>
+
+  <div class="modal" id="browse-modal">
+    <section class="modal-panel">
+      <header class="modal-header">
+        <div>
+          <h2>Browse compatible games</h2>
+          <p>Search the community guide. We will connect this to your real game database next.</p>
+        </div>
+
+        <button class="close-button" type="button" data-close>×</button>
+      </header>
+
+      <div class="browse-toolbar">
+        <label class="search-box">
+          <span>⌕</span>
+          <input id="game-search" type="search" placeholder="Search a game, launcher, or Proton version...">
+        </label>
+
+        <select class="status-select" id="status-filter">
+          <option value="all">All statuses</option>
+          <option value="works">Works</option>
+          <option value="fixes">Works with fixes</option>
+          <option value="partial">Partial</option>
+          <option value="blocked">Blocked</option>
+        </select>
+      </div>
+
+      <div class="game-grid">
+        <article class="game-card" data-name="gray zone warfare proton experimental eac anti cheat steam" data-status="fixes">
+          <span class="badge"><span class="dot"></span>Works with fixes</span>
+          <h3>Gray Zone Warfare</h3>
+          <p>Proton Experimental · EAC notes · launch-option guide</p>
+          <div class="game-meta"><span>Steam</span><span>Guide coming soon →</span></div>
+        </article>
+
+        <article class="game-card" data-name="helldivers 2 proton steam multiplayer" data-status="works">
+          <span class="badge green"><span class="dot"></span>Works</span>
+          <h3>Helldivers 2</h3>
+          <p>Proton setup · performance notes · multiplayer test</p>
+          <div class="game-meta"><span>Steam</span><span>Guide coming soon →</span></div>
+        </article>
+
+        <article class="game-card" data-name="cyberpunk 2077 gog steam proton controller graphics" data-status="works">
+          <span class="badge green"><span class="dot"></span>Works</span>
+          <h3>Cyberpunk 2077</h3>
+          <p>Proton guide · controller notes · graphics settings</p>
+          <div class="game-meta"><span>Steam / GOG</span><span>Guide coming soon →</span></div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="submit-modal">
+    <section class="modal-panel">
+      <header class="modal-header">
+        <div>
+          <h2>Submit a game test</h2>
+          <p>Share what worked on your Linux setup. We will connect this to a real submission system after the design is finished.</p>
+        </div>
+
+        <button class="close-button" type="button" data-close>×</button>
+      </header>
+
+      <form id="test-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="game-name">Game name</label>
+            <input id="game-name" required placeholder="Example: Gray Zone Warfare">
+          </div>
+
+          <div class="field">
+            <label for="store">Store / launcher</label>
+            <select id="store" required>
+              <option value="">Choose one</option>
+              <option>Steam</option>
+              <option>Epic Games Store</option>
+              <option>GOG</option>
+              <option>Battle.net</option>
+              <option>EA App</option>
+              <option>Ubisoft Connect</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="distro">Linux distribution</label>
+            <input id="distro" placeholder="Example: Nobara Linux">
+          </div>
+
+          <div class="field">
+            <label for="gpu">GPU and driver</label>
+            <input id="gpu" placeholder="Example: RTX 3060 Ti · Nvidia driver">
+          </div>
+
+          <div class="field">
+            <label for="proton">Proton / Wine version</label>
+            <input id="proton" placeholder="Example: Proton Experimental">
+          </div>
+
+          <div class="field">
+            <label for="result">Compatibility result</label>
+            <select id="result" required>
+              <option value="">Choose one</option>
+              <option>Works</option>
+              <option>Works with fixes</option>
+              <option>Partial / unstable</option>
+              <option>Blocked / not working</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="launch-options">Launch options or commands used</label>
+            <input id="launch-options" placeholder="Example: PROTON_ENABLE_WAYLAND=0 %command%">
+          </div>
+
+          <div class="field full">
+            <label for="fixes">Fixes, setup steps, and known issues</label>
+            <textarea id="fixes" placeholder="Explain what you changed, what worked, and what problems remain."></textarea>
+          </div>
+        </div>
+
+        <p class="form-note">
+          Do not include passwords, recovery codes, account IDs, or private information.
+        </p>
+
+        <div class="form-actions">
+          <button class="button secondary" type="button" data-close>Cancel</button>
+          <button class="button primary" type="submit">Submit test →</button>
+        </div>
+
+        <div class="success-message" id="success-message">
+          Thanks—your test was captured in this local design preview. Next we can connect it to Discord, Netlify Forms, or a database.
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    const modals = document.querySelectorAll(".modal");
+
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.add("show");
+      document.body.classList.add("modal-open");
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove("show");
+      document.body.classList.remove("modal-open");
+    }
+
+    document.querySelectorAll("[data-open]").forEach((button) => {
+      button.addEventListener("click", () => openModal(button.dataset.open));
+    });
+
+    document.querySelectorAll("[data-close]").forEach((button) => {
+      button.addEventListener("click", () => closeModal(button.closest(".modal")));
+    });
+
+    modals.forEach((modal) => {
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) closeModal(modal);
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        modals.forEach(closeModal);
+      }
+    });
+
+    const search = document.getElementById("game-search");
+    const filter = document.getElementById("status-filter");
+    const cards = [...document.querySelectorAll(".game-card")];
+
+    function filterGames() {
+      const term = search.value.trim().toLowerCase();
+      const status = filter.value;
+
+      cards.forEach((card) => {
+        const matchName = card.dataset.name.includes(term);
+        const matchStatus = status === "all" || card.dataset.status === status;
+        card.hidden = !(matchName && matchStatus);
+      });
+    }
+
+    search.addEventListener("input", filterGames);
+    filter.addEventListener("change", filterGames);
+
+    document.getElementById("test-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      document.getElementById("success-message").classList.add("show");
+    });
+  </script>
+</body>
+</html>
+
