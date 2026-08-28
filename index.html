@@ -763,6 +763,44 @@
         min-width: 32px;
       }
     }
+    /* Add Game Listing form fields */
+#submit-modal input,
+#submit-modal select,
+#submit-modal textarea {
+  color: #ffffff;
+  background: #2b2d3a;
+  border: 1px solid #5a5e70;
+  caret-color: #ffffff;
+}
+
+#submit-modal input::placeholder,
+#submit-modal textarea::placeholder {
+  color: #b7bac8;
+  opacity: 1;
+}
+
+#submit-modal select {
+  color: #ffffff;
+}
+
+#submit-modal select:invalid {
+  color: #b7bac8;
+}
+
+#submit-modal option {
+  color: #ffffff;
+  background: #2b2d3a;
+}
+
+#submit-modal input:focus,
+#submit-modal select:focus,
+#submit-modal textarea:focus {
+  color: #ffffff;
+  border-color: #a979ff;
+  background: #343747;
+  box-shadow: 0 0 0 3px rgba(169, 121, 255, 0.18);
+  outline: none;
+}
   </style>
 </head>
 
