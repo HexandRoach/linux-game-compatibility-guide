@@ -879,35 +879,35 @@
         <button class="close-button" type="button" data-close aria-label="Close game library">×</button>
       </header>
 
-      <div class="alphabet-nav" aria-label="Browse library alphabetically">
-        <button class="alphabet-button active" type="button" data-letter="all">All</button>
-        <button class="alphabet-button empty" type="button" disabled>A</button>
-        <button class="alphabet-button empty" type="button" disabled>B</button>
-        <button class="alphabet-button" type="button" data-letter="C">C</button>
-        <button class="alphabet-button empty" type="button" disabled>D</button>
-        <button class="alphabet-button empty" type="button" disabled>E</button>
-        <button class="alphabet-button empty" type="button" disabled>F</button>
-        <button class="alphabet-button" type="button" data-letter="G">G</button>
-        <button class="alphabet-button" type="button" data-letter="H">H</button>
-        <button class="alphabet-button empty" type="button" disabled>I</button>
-        <button class="alphabet-button empty" type="button" disabled>J</button>
-        <button class="alphabet-button empty" type="button" disabled>K</button>
-        <button class="alphabet-button empty" type="button" disabled>L</button>
-        <button class="alphabet-button empty" type="button" disabled>M</button>
-        <button class="alphabet-button empty" type="button" disabled>N</button>
-        <button class="alphabet-button empty" type="button" disabled>O</button>
-        <button class="alphabet-button empty" type="button" disabled>P</button>
-        <button class="alphabet-button empty" type="button" disabled>Q</button>
-        <button class="alphabet-button empty" type="button" disabled>R</button>
-        <button class="alphabet-button empty" type="button" disabled>S</button>
-        <button class="alphabet-button empty" type="button" disabled>T</button>
-        <button class="alphabet-button empty" type="button" disabled>U</button>
-        <button class="alphabet-button empty" type="button" disabled>V</button>
-        <button class="alphabet-button empty" type="button" disabled>W</button>
-        <button class="alphabet-button empty" type="button" disabled>X</button>
-        <button class="alphabet-button empty" type="button" disabled>Y</button>
-        <button class="alphabet-button empty" type="button" disabled>Z</button>
-      </div>
+     <div class="alphabet-nav" aria-label="Browse library alphabetically">
+  <button class="alphabet-button active" type="button" data-letter="all">All</button>
+  <button class="alphabet-button" type="button" data-letter="A">A</button>
+  <button class="alphabet-button" type="button" data-letter="B">B</button>
+  <button class="alphabet-button" type="button" data-letter="C">C</button>
+  <button class="alphabet-button" type="button" data-letter="D">D</button>
+  <button class="alphabet-button" type="button" data-letter="E">E</button>
+  <button class="alphabet-button" type="button" data-letter="F">F</button>
+  <button class="alphabet-button" type="button" data-letter="G">G</button>
+  <button class="alphabet-button" type="button" data-letter="H">H</button>
+  <button class="alphabet-button" type="button" data-letter="I">I</button>
+  <button class="alphabet-button" type="button" data-letter="J">J</button>
+  <button class="alphabet-button" type="button" data-letter="K">K</button>
+  <button class="alphabet-button" type="button" data-letter="L">L</button>
+  <button class="alphabet-button" type="button" data-letter="M">M</button>
+  <button class="alphabet-button" type="button" data-letter="N">N</button>
+  <button class="alphabet-button" type="button" data-letter="O">O</button>
+  <button class="alphabet-button" type="button" data-letter="P">P</button>
+  <button class="alphabet-button" type="button" data-letter="Q">Q</button>
+  <button class="alphabet-button" type="button" data-letter="R">R</button>
+  <button class="alphabet-button" type="button" data-letter="S">S</button>
+  <button class="alphabet-button" type="button" data-letter="T">T</button>
+  <button class="alphabet-button" type="button" data-letter="U">U</button>
+  <button class="alphabet-button" type="button" data-letter="V">V</button>
+  <button class="alphabet-button" type="button" data-letter="W">W</button>
+  <button class="alphabet-button" type="button" data-letter="X">X</button>
+  <button class="alphabet-button" type="button" data-letter="Y">Y</button>
+  <button class="alphabet-button" type="button" data-letter="Z">Z</button>
+</div>
 
       <p class="library-summary" id="library-summary">
         Showing all currently verified reports.
@@ -1104,191 +1104,262 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
   <script>
-    const SUPABASE_URL = "https://izsvaqlveqdaytnzptca.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_5sH3u4mSEcIjMq10D3-whA_NjlpndNf";
+  const SUPABASE_URL = "https://izsvaqlveqdaytnzptca.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_5sH3u4mSEcIjMq10D3-whA_NjlpndNf";
 
-    const supabaseClient = supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+  let supabaseClient = null;
 
-    function openModal(id) {
-      const modal = document.getElementById(id);
+  try {
+    if (
+      typeof supabase !== "undefined" &&
+      SUPABASE_URL &&
+      SUPABASE_ANON_KEY &&
+      !SUPABASE_ANON_KEY.includes("PASTE_YOUR")
+    ) {
+      supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+    }
+  } catch (error) {
+    console.error("Supabase setup error:", error);
+  }
 
-      if (!modal) {
-        return;
-      }
+  function openModal(id) {
+    const modal = document.getElementById(id);
 
-      modal.classList.add("show");
-      modal.setAttribute("aria-hidden", "false");
-      document.body.classList.add("modal-open");
+    if (!modal) {
+      console.warn(`Modal not found: ${id}`);
+      return;
     }
 
-    function closeModal(modal) {
-      if (!modal) {
-        return;
-      }
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  }
 
-      modal.classList.remove("show");
-      modal.setAttribute("aria-hidden", "true");
-
-      if (!document.querySelector(".modal.show")) {
-        document.body.classList.remove("modal-open");
-      }
+  function closeModal(modal) {
+    if (!modal) {
+      return;
     }
 
-    document.addEventListener("click", (event) => {
-      const clickedElement = event.target instanceof Element ? event.target : null;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
 
-      if (!clickedElement) {
-        return;
-      }
+    if (!document.querySelector(".modal.show")) {
+      document.body.classList.remove("modal-open");
+    }
+  }
 
-      const openButton = clickedElement.closest("[data-open]");
+  document.addEventListener("click", (event) => {
+    const element = event.target instanceof Element ? event.target : null;
 
-      if (openButton) {
-        event.preventDefault();
-        openModal(openButton.dataset.open);
-        return;
-      }
+    if (!element) {
+      return;
+    }
 
-      const closeButton = clickedElement.closest("[data-close]");
+    const openButton = element.closest("[data-open]");
 
-      if (closeButton) {
-        event.preventDefault();
-        closeModal(closeButton.closest(".modal"));
-        return;
-      }
+    if (openButton) {
+      event.preventDefault();
+      openModal(openButton.dataset.open);
+      return;
+    }
 
-      if (clickedElement.classList.contains("modal")) {
-        closeModal(clickedElement);
-      }
-    });
+    const closeButton = element.closest("[data-close]");
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        document.querySelectorAll(".modal.show").forEach((modal) => {
-          closeModal(modal);
-        });
-      }
-    });
+    if (closeButton) {
+      event.preventDefault();
+      closeModal(closeButton.closest(".modal"));
+      return;
+    }
 
-    const alphabetButtons = document.querySelectorAll("[data-letter]");
-    const librarySections = document.querySelectorAll("[data-letter-section]");
-    const librarySummary = document.getElementById("library-summary");
+    if (element.classList.contains("modal")) {
+      closeModal(element);
+    }
+  });
 
-    function showLibraryLetter(letter) {
-      librarySections.forEach((section) => {
-        const shouldShow =
-          letter === "all" ||
-          section.dataset.letterSection === letter;
-
-        section.hidden = !shouldShow;
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      document.querySelectorAll(".modal.show").forEach((modal) => {
+        closeModal(modal);
       });
-
-      if (librarySummary) {
-        librarySummary.textContent = letter === "all"
-          ? "Showing all currently verified reports."
-          : `Showing verified reports beginning with the letter ${letter}.`;
-      }
     }
+  });
+
+  const alphabetButtons = document.querySelectorAll(".alphabet-button[data-letter]");
+  const librarySummary = document.getElementById("library-summary");
+
+  function showLibraryLetter(letter) {
+    document.querySelectorAll("[data-letter-section]").forEach((section) => {
+      const shouldShow =
+        letter === "all" ||
+        section.dataset.letterSection === letter;
+
+      section.hidden = !shouldShow;
+    });
+
+    if (librarySummary) {
+      librarySummary.textContent = letter === "all"
+        ? "Showing all currently verified reports."
+        : `Showing verified reports beginning with the letter ${letter}.`;
+    }
+  }
+
+  function refreshAlphabetButtons() {
+    const lettersWithGames = new Set();
+
+    document.querySelectorAll("[data-letter-section]").forEach((section) => {
+      const letter = section.dataset.letterSection;
+
+      if (letter && section.querySelector(".game-card")) {
+        lettersWithGames.add(letter);
+      }
+    });
 
     alphabetButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        alphabetButtons.forEach((item) => {
-          item.classList.remove("active");
-        });
+      const letter = button.dataset.letter;
 
-        button.classList.add("active");
-        showLibraryLetter(button.dataset.letter);
+      if (letter === "all") {
+        button.disabled = false;
+        button.classList.remove("empty");
+        return;
+      }
+
+      const enabled = lettersWithGames.has(letter);
+
+      button.disabled = !enabled;
+      button.classList.toggle("empty", !enabled);
+    });
+  }
+
+  alphabetButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.disabled) {
+        return;
+      }
+
+      alphabetButtons.forEach((item) => {
+        item.classList.remove("active");
       });
+
+      button.classList.add("active");
+      showLibraryLetter(button.dataset.letter);
+    });
+  });
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getStatusBadgeClass(status) {
+    const badgeClasses = {
+      Excellent: "green",
+      Playable: "",
+      Limited: "orange",
+      Unsupported: "red"
+    };
+
+    return badgeClasses[status] || "gray";
+  }
+
+  function formatTestedDate(dateValue) {
+    if (!dateValue) {
+      return "Not provided";
+    }
+
+    const date = new Date(`${dateValue}T00:00:00`);
+
+    return Number.isNaN(date.getTime())
+      ? "Not provided"
+      : date.toLocaleDateString();
+  }
+
+  async function loadApprovedGameReports() {
+    const librarySectionsContainer = document.getElementById("library-sections");
+    const reportsContainer = document.getElementById("community-reports");
+
+    if (!librarySectionsContainer || !reportsContainer || !supabaseClient) {
+      return;
+    }
+
+    reportsContainer.innerHTML = `
+      <p class="library-loading">Loading approved community reports…</p>
+    `;
+
+    const { data: reports, error } = await supabaseClient
+      .from("game_reports")
+      .select("*")
+      .eq("moderation_status", "approved")
+      .order("game_name", { ascending: true });
+
+    if (error) {
+      console.error("Could not load approved reports:", error);
+      reportsContainer.innerHTML = `
+        <p class="library-loading">
+          Approved community reports could not be loaded right now.
+        </p>
+      `;
+      return;
+    }
+
+    document.querySelectorAll("[data-community-letter-section]").forEach((section) => {
+      section.remove();
     });
 
-    function escapeHtml(value) {
-      return String(value || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
+    reportsContainer.innerHTML = "";
 
-    function getStatusBadgeClass(status) {
-      const badgeClasses = {
-        Excellent: "green",
-        Playable: "",
-        Limited: "orange",
-        Unsupported: "red"
-      };
-
-      return badgeClasses[status] || "gray";
-    }
-
-    function formatTestedDate(dateValue) {
-      if (!dateValue) {
-        return "Not provided";
-      }
-
-      const date = new Date(`${dateValue}T00:00:00`);
-
-      return Number.isNaN(date.getTime())
-        ? "Not provided"
-        : date.toLocaleDateString();
-    }
-
-    async function loadApprovedGameReports() {
-      const reportsContainer = document.getElementById("community-reports");
-
-      if (!reportsContainer) {
-        return;
-      }
-
+    if (!reports || reports.length === 0) {
       reportsContainer.innerHTML = `
-        <p class="library-loading">Loading approved community reports…</p>
+        <p class="library-loading">
+          No community reports have been approved yet.
+        </p>
       `;
+      refreshAlphabetButtons();
+      return;
+    }
 
-      const { data: reports, error } = await supabaseClient
-        .from("game_reports")
-        .select("*")
-        .eq("moderation_status", "approved")
-        .order("created_at", { ascending: false });
+    const reportsByLetter = {};
 
-      if (error) {
-        console.error(error);
+    reports.forEach((report) => {
+      const gameName = String(report.game_name || "").trim();
+      const firstCharacter = gameName.charAt(0).toUpperCase();
+      const letter = /^[A-Z]$/.test(firstCharacter) ? firstCharacter : "#";
 
-        reportsContainer.innerHTML = `
-          <p class="library-loading">
-            Approved community reports could not be loaded right now.
-          </p>
-        `;
-
-        return;
+      if (!reportsByLetter[letter]) {
+        reportsByLetter[letter] = [];
       }
 
-      if (!reports || reports.length === 0) {
-        reportsContainer.innerHTML = `
-          <p class="library-loading">
-            No community reports have been approved yet.
-          </p>
-        `;
+      reportsByLetter[letter].push(report);
+    });
 
-        return;
-      }
+    Object.keys(reportsByLetter)
+      .sort()
+      .forEach((letter) => {
+        const section = document.createElement("section");
 
-      reportsContainer.innerHTML = `
-        <section class="library-section">
-          <h3 class="library-section-title">Community reports</h3>
+        section.className = "library-section";
+        section.dataset.letterSection = letter;
+        section.dataset.communityLetterSection = "true";
+
+        section.innerHTML = `
+          <h3 class="library-section-title">${escapeHtml(letter)}</h3>
 
           <div class="game-grid">
-            ${reports.map((report) => `
+            ${reportsByLetter[letter].map((report) => `
               <article class="game-card community-report-card">
                 <span class="badge ${getStatusBadgeClass(report.compatibility_status)}">
                   <span class="dot"></span>${escapeHtml(report.compatibility_status)}
                 </span>
 
                 <h3>${escapeHtml(report.game_name)}</h3>
-
                 <p>Community-submitted compatibility result</p>
 
                 <div class="game-info">
@@ -1296,22 +1367,18 @@
                     <span>Available on</span>
                     <strong>${escapeHtml(report.store)}</strong>
                   </div>
-
                   <div>
                     <span>Device / distro</span>
                     <strong>${escapeHtml(report.distro || "Not provided")}</strong>
                   </div>
-
                   <div>
                     <span>Proton / Wine</span>
                     <strong>${escapeHtml(report.proton || "Not provided")}</strong>
                   </div>
-
                   <div>
                     <span>Date tested</span>
                     <strong>${escapeHtml(formatTestedDate(report.tested_date))}</strong>
                   </div>
-
                   <div>
                     <span>Current status</span>
                     <strong class="${report.compatibility_status === "Unsupported" ? "working-no" : "working-yes"}">
@@ -1334,37 +1401,53 @@
               </article>
             `).join("")}
           </div>
-        </section>
-      `;
-    }
+        `;
 
-    const testForm = document.getElementById("test-form");
-    const successMessage = document.getElementById("success-message");
+        librarySectionsContainer.appendChild(section);
+      });
 
-    if (testForm) {
-      testForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
+    refreshAlphabetButtons();
+    showLibraryLetter("all");
+  }
 
-        const submitButton = testForm.querySelector('button[type="submit"]');
-        const gameName = document.getElementById("game-name").value.trim();
-        const store = document.getElementById("store").value;
-        const distro = document.getElementById("distro").value.trim();
-        const proton = document.getElementById("proton").value.trim();
-        const compatibilityStatus = document.getElementById("status").value;
-        const testedDate = document.getElementById("tested-date").value || null;
-        const launchOptions = document.getElementById("launch-options").value.trim();
-        const notes = document.getElementById("notes").value.trim();
+  const testForm = document.getElementById("test-form");
+  const successMessage = document.getElementById("success-message");
 
-        if (!gameName || !store || !compatibilityStatus) {
-          successMessage.textContent =
-            "Please enter a game title, select a store or launcher, and choose a compatibility status.";
-          successMessage.classList.add("show");
-          return;
-        }
+  if (testForm) {
+    testForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
-        submitButton.disabled = true;
-        submitButton.textContent = "Submitting…";
+      const submitButton = testForm.querySelector('button[type="submit"]');
+      const gameName = document.getElementById("game-name").value.trim();
+      const store = document.getElementById("store").value;
+      const distro = document.getElementById("distro").value.trim();
+      const proton = document.getElementById("proton").value.trim();
+      const compatibilityStatus = document.getElementById("status").value;
+      const testedDate = document.getElementById("tested-date").value || null;
+      const launchOptions = document.getElementById("launch-options").value.trim();
+      const notes = document.getElementById("notes").value.trim();
 
+      successMessage.classList.remove("show");
+      successMessage.textContent = "";
+
+      if (!gameName || !store || !compatibilityStatus) {
+        successMessage.textContent =
+          "Please enter a game title, select a store or launcher, and choose a compatibility status.";
+        successMessage.classList.add("show");
+        return;
+      }
+
+      if (!supabaseClient) {
+        successMessage.textContent =
+          "The submission service is not configured. Check the Supabase publishable key.";
+        successMessage.classList.add("show");
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting…";
+
+      try {
         const { error } = await supabaseClient
           .from("game_reports")
           .insert({
@@ -1383,27 +1466,38 @@
         submitButton.textContent = "Submit test result";
 
         if (error) {
-          console.error(error);
+          console.error("Supabase submission error:", error);
           successMessage.textContent =
-            "Your report could not be submitted. Please try again in a moment.";
+            `Report was not submitted: ${error.message}`;
           successMessage.classList.add("show");
           return;
         }
 
         successMessage.textContent =
-          "Thanks! Your game report was submitted for review.";
+          "Thanks! Your report was submitted for review.";
         successMessage.classList.add("show");
 
         testForm.reset();
 
         window.setTimeout(() => {
           closeModal(document.getElementById("submit-modal"));
-        }, 1800);
-      });
-    }
+        }, 2000);
+      } catch (error) {
+        console.error("Unexpected submission error:", error);
 
-    showLibraryLetter("all");
-    loadApprovedGameReports();
-  </script>
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit test result";
+
+        successMessage.textContent =
+          "A network error stopped the submission. Please try again.";
+        successMessage.classList.add("show");
+      }
+    });
+  }
+
+  refreshAlphabetButtons();
+  showLibraryLetter("all");
+  loadApprovedGameReports();
+</script>
 </body>
 </html>
