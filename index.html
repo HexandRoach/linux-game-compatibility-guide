@@ -843,8 +843,8 @@
 
         <div class="actions">
           <button class="button primary" type="button" data-open="library-modal">
-            Browse game reports →
-          </button>
+  Browse game reports →
+</button>
 
           <button class="button secondary" type="button" disabled title="Contributions will open soon">
             Contributions opening soon
@@ -864,7 +864,7 @@
     </footer>
   </main>
 
-     <div class="modal" id="library-modal" aria-hidden="true">
+       <div class="modal" id="library-modal" aria-hidden="true">
     <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="library-title">
       <header class="modal-header">
         <div>
@@ -968,6 +968,8 @@
           </div>
         </section>
       </div>
+
+      <div id="community-reports"></div>
     </section>
   </div>
 
@@ -977,7 +979,7 @@
         <div>
           <h2 id="status-title">Compatibility status guide</h2>
           <p>
-            Every game report uses one clear status based on our latest community
+            Every game report uses one clear status based on the latest community
             testing. Game patches, Proton versions, GPU drivers, launchers, and
             anti-cheat updates can change a game’s status, so reports should be retested.
           </p>
@@ -1020,274 +1022,388 @@
     </section>
   </div>
 
+  <div class="modal" id="submit-modal" aria-hidden="true">
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="submit-title">
+      <header class="modal-header">
+        <div>
+          <p class="eyebrow">Community submissions</p>
+          <h2 id="submit-title">Add a game listing</h2>
+          <p>Share your Linux or Steam Deck compatibility results.</p>
+        </div>
+
+        <button class="close-button" type="button" data-close aria-label="Close add game listing">×</button>
+      </header>
+
+      <form id="test-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="game-name">Game title</label>
+            <input id="game-name" required placeholder="Example: Hades II">
+          </div>
+
+          <div class="field">
+            <label for="store">Store or launcher</label>
+            <select id="store" required>
+              <option value="" selected disabled>Choose one</option>
+              <option>Steam</option>
+              <option>Epic Games Store</option>
+              <option>GOG</option>
+              <option>Battle.net</option>
+              <option>EA App</option>
+              <option>Ubisoft Connect</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="distro">Distribution or device</label>
+            <input id="distro" placeholder="Example: Fedora 44 / Steam Deck OLED">
+          </div>
+
+          <div class="field">
+            <label for="proton">Proton or Wine version</label>
+            <input id="proton" placeholder="Example: Proton Experimental">
+          </div>
+
+          <div class="field">
+            <label for="status">Compatibility status</label>
+            <select id="status" required>
+              <option value="" selected disabled>Choose one</option>
+              <option>Excellent</option>
+              <option>Playable</option>
+              <option>Limited</option>
+              <option>Unsupported</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="tested-date">Date tested</label>
+            <input id="tested-date" type="date">
+          </div>
+
+          <div class="field full">
+            <label for="launch-options">Launch options</label>
+            <input id="launch-options" placeholder="Example: PROTON_ENABLE_WAYLAND=0 %command%">
+          </div>
+
+          <div class="field full">
+            <label for="notes">Notes, fixes, and known issues</label>
+            <textarea id="notes" placeholder="Explain the setup, what works, and remaining problems."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="button secondary" type="button" data-close>Cancel</button>
+          <button class="button primary" type="submit">Submit test result</button>
+        </div>
+
+        <div class="success-message" id="success-message" role="status"></div>
+      </form>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
-  const modals = document.querySelectorAll(".modal");
+    const SUPABASE_URL = "https://izsvaqlveqdaytnzptca.supabase.co";
+    const SUPABASE_ANON_KEY = "PASTE_YOUR_NEW_SUPABASE_PUBLISHABLE_KEY_HERE";
 
-  function openModal(id) {
-    const modal = document.getElementById(id);
+    const supabaseClient = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
-    if (!modal) return;
+    function openModal(id) {
+      const modal = document.getElementById(id);
 
-    modal.classList.add("show");
-    modal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("modal-open");
-  }
+      if (!modal) {
+        return;
+      }
 
-  function closeModal(modal) {
-    if (!modal) return;
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+    }
 
-    modal.classList.remove("show");
-    modal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
-  }
+    function closeModal(modal) {
+      if (!modal) {
+        return;
+      }
 
-  document.querySelectorAll("[data-open]").forEach((button) => {
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-      openModal(button.dataset.open);
-    });
-  });
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
 
-  document.querySelectorAll("[data-close]").forEach((button) => {
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-      closeModal(button.closest(".modal"));
-    });
-  });
+      if (!document.querySelector(".modal.show")) {
+        document.body.classList.remove("modal-open");
+      }
+    }
 
-  modals.forEach((modal) => {
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        closeModal(modal);
+    document.addEventListener("click", (event) => {
+      const clickedElement = event.target instanceof Element ? event.target : null;
+
+      if (!clickedElement) {
+        return;
+      }
+
+      const openButton = clickedElement.closest("[data-open]");
+
+      if (openButton) {
+        event.preventDefault();
+        openModal(openButton.dataset.open);
+        return;
+      }
+
+      const closeButton = clickedElement.closest("[data-close]");
+
+      if (closeButton) {
+        event.preventDefault();
+        closeModal(closeButton.closest(".modal"));
+        return;
+      }
+
+      if (clickedElement.classList.contains("modal")) {
+        closeModal(clickedElement);
       }
     });
-  });
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      modals.forEach((modal) => {
-        if (modal.classList.contains("show")) {
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        document.querySelectorAll(".modal.show").forEach((modal) => {
           closeModal(modal);
+        });
+      }
+    });
+
+    const alphabetButtons = document.querySelectorAll("[data-letter]");
+    const librarySections = document.querySelectorAll("[data-letter-section]");
+    const librarySummary = document.getElementById("library-summary");
+
+    function showLibraryLetter(letter) {
+      librarySections.forEach((section) => {
+        const shouldShow =
+          letter === "all" ||
+          section.dataset.letterSection === letter;
+
+        section.hidden = !shouldShow;
+      });
+
+      if (librarySummary) {
+        librarySummary.textContent = letter === "all"
+          ? "Showing all currently verified reports."
+          : `Showing verified reports beginning with the letter ${letter}.`;
+      }
+    }
+
+    alphabetButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        alphabetButtons.forEach((item) => {
+          item.classList.remove("active");
+        });
+
+        button.classList.add("active");
+        showLibraryLetter(button.dataset.letter);
+      });
+    });
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function getStatusBadgeClass(status) {
+      const badgeClasses = {
+        Excellent: "green",
+        Playable: "",
+        Limited: "orange",
+        Unsupported: "red"
+      };
+
+      return badgeClasses[status] || "gray";
+    }
+
+    function formatTestedDate(dateValue) {
+      if (!dateValue) {
+        return "Not provided";
+      }
+
+      const date = new Date(`${dateValue}T00:00:00`);
+
+      return Number.isNaN(date.getTime())
+        ? "Not provided"
+        : date.toLocaleDateString();
+    }
+
+    async function loadApprovedGameReports() {
+      const reportsContainer = document.getElementById("community-reports");
+
+      if (!reportsContainer) {
+        return;
+      }
+
+      reportsContainer.innerHTML = `
+        <p class="library-loading">Loading approved community reports…</p>
+      `;
+
+      const { data: reports, error } = await supabaseClient
+        .from("game_reports")
+        .select("*")
+        .eq("moderation_status", "approved")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+
+        reportsContainer.innerHTML = `
+          <p class="library-loading">
+            Approved community reports could not be loaded right now.
+          </p>
+        `;
+
+        return;
+      }
+
+      if (!reports || reports.length === 0) {
+        reportsContainer.innerHTML = `
+          <p class="library-loading">
+            No community reports have been approved yet.
+          </p>
+        `;
+
+        return;
+      }
+
+      reportsContainer.innerHTML = `
+        <section class="library-section">
+          <h3 class="library-section-title">Community reports</h3>
+
+          <div class="game-grid">
+            ${reports.map((report) => `
+              <article class="game-card community-report-card">
+                <span class="badge ${getStatusBadgeClass(report.compatibility_status)}">
+                  <span class="dot"></span>${escapeHtml(report.compatibility_status)}
+                </span>
+
+                <h3>${escapeHtml(report.game_name)}</h3>
+
+                <p>Community-submitted compatibility result</p>
+
+                <div class="game-info">
+                  <div>
+                    <span>Available on</span>
+                    <strong>${escapeHtml(report.store)}</strong>
+                  </div>
+
+                  <div>
+                    <span>Device / distro</span>
+                    <strong>${escapeHtml(report.distro || "Not provided")}</strong>
+                  </div>
+
+                  <div>
+                    <span>Proton / Wine</span>
+                    <strong>${escapeHtml(report.proton || "Not provided")}</strong>
+                  </div>
+
+                  <div>
+                    <span>Date tested</span>
+                    <strong>${escapeHtml(formatTestedDate(report.tested_date))}</strong>
+                  </div>
+
+                  <div>
+                    <span>Current status</span>
+                    <strong class="${report.compatibility_status === "Unsupported" ? "working-no" : "working-yes"}">
+                      ${escapeHtml(report.compatibility_status)}
+                    </strong>
+                  </div>
+                </div>
+
+                ${
+                  report.launch_options
+                    ? `<p class="report-launch-options"><strong>Launch options:</strong> ${escapeHtml(report.launch_options)}</p>`
+                    : ""
+                }
+
+                ${
+                  report.notes
+                    ? `<p class="report-notes">${escapeHtml(report.notes)}</p>`
+                    : ""
+                }
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    const testForm = document.getElementById("test-form");
+    const successMessage = document.getElementById("success-message");
+
+    if (testForm) {
+      testForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const submitButton = testForm.querySelector('button[type="submit"]');
+        const gameName = document.getElementById("game-name").value.trim();
+        const store = document.getElementById("store").value;
+        const distro = document.getElementById("distro").value.trim();
+        const proton = document.getElementById("proton").value.trim();
+        const compatibilityStatus = document.getElementById("status").value;
+        const testedDate = document.getElementById("tested-date").value || null;
+        const launchOptions = document.getElementById("launch-options").value.trim();
+        const notes = document.getElementById("notes").value.trim();
+
+        if (!gameName || !store || !compatibilityStatus) {
+          successMessage.textContent =
+            "Please enter a game title, select a store or launcher, and choose a compatibility status.";
+          successMessage.classList.add("show");
+          return;
         }
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting…";
+
+        const { error } = await supabaseClient
+          .from("game_reports")
+          .insert({
+            game_name: gameName,
+            store,
+            distro: distro || null,
+            proton: proton || null,
+            compatibility_status: compatibilityStatus,
+            tested_date: testedDate,
+            launch_options: launchOptions || null,
+            notes: notes || null,
+            moderation_status: "pending"
+          });
+
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit test result";
+
+        if (error) {
+          console.error(error);
+          successMessage.textContent =
+            "Your report could not be submitted. Please try again in a moment.";
+          successMessage.classList.add("show");
+          return;
+        }
+
+        successMessage.textContent =
+          "Thanks! Your game report was submitted for review.";
+        successMessage.classList.add("show");
+
+        testForm.reset();
+
+        window.setTimeout(() => {
+          closeModal(document.getElementById("submit-modal"));
+        }, 1800);
       });
     }
-  });
 
-  const alphabetButtons = document.querySelectorAll("[data-letter]");
-  const librarySections = document.querySelectorAll("[data-letter-section]");
-  const librarySummary = document.getElementById("library-summary");
-
-  function showLibraryLetter(letter) {
-    librarySections.forEach((section) => {
-      const shouldShow = letter === "all" || section.dataset.letterSection === letter;
-      section.hidden = !shouldShow;
-    });
-
-    if (librarySummary) {
-      librarySummary.textContent = letter === "all"
-        ? "Showing all currently verified reports."
-        : `Showing verified reports beginning with the letter ${letter}.`;
-    }
-  }
-
-  alphabetButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      alphabetButtons.forEach((item) => item.classList.remove("active"));
-      button.classList.add("active");
-      showLibraryLetter(button.dataset.letter);
-    });
-  });
-
-  showLibraryLetter("all");
-</script>
-
+    showLibraryLetter("all");
+    loadApprovedGameReports();
   </script>
-
-<div
-  class="modal"
-  id="submit-modal"
-  aria-hidden="true"
-  onclick="if (event.target === this) { this.classList.remove('show'); this.setAttribute('aria-hidden', 'true'); document.body.classList.remove('modal-open'); }"
->
-  <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="submit-title">
-    <header class="modal-header">
-      <div>
-        <p class="eyebrow">Community submissions</p>
-        <h2 id="submit-title">Add a game listing</h2>
-        <p>Share your Linux or Steam Deck compatibility results.</p>
-      </div>
-
-      <button
-  class="close-button"
-  type="button"
-  aria-label="Close"
-  onclick="document.getElementById('submit-modal').classList.remove('show'); document.getElementById('submit-modal').setAttribute('aria-hidden', 'true'); document.body.classList.remove('modal-open');"
->×</button>
-
-    </header>
-
-    <form id="test-form">
-      <div class="form-grid">
-        <div class="field">
-          <label for="game-name">Game title</label>
-          <input id="game-name" required placeholder="Example: Hades II">
-        </div>
-
-        <div class="field">
-          <label for="store">Store or launcher</label>
-          <select id="store" required>
-            <option value="">Choose one</option>
-            <option>Steam</option>
-            <option>Epic Games Store</option>
-            <option>GOG</option>
-            <option>Battle.net</option>
-            <option>EA App</option>
-            <option>Ubisoft Connect</option>
-            <option>Other</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="distro">Distribution or device</label>
-          <input id="distro" placeholder="Example: Fedora 42 / Steam Deck OLED">
-        </div>
-
-        <div class="field">
-          <label for="proton">Proton or Wine version</label>
-          <input id="proton" placeholder="Example: Proton Experimental">
-        </div>
-
-        <div class="field">
-          <label for="status">Compatibility status</label>
-          <select id="status" required>
-            <option value="">Choose one</option>
-            <option>Excellent</option>
-            <option>Playable</option>
-            <option>Limited</option>
-            <option>Unsupported</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="tested-date">Date tested</label>
-          <input id="tested-date" type="date">
-        </div>
-
-        <div class="field full">
-          <label for="launch-options">Launch options</label>
-          <input id="launch-options" placeholder="Example: PROTON_ENABLE_WAYLAND=0 %command%">
-        </div>
-
-        <div class="field full">
-          <label for="notes">Notes, fixes, and known issues</label>
-          <textarea id="notes" placeholder="Explain the setup, what works, and remaining problems."></textarea>
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button
-  class="button secondary"
-  type="button"
-  onclick="document.getElementById('submit-modal').classList.remove('show'); document.getElementById('submit-modal').setAttribute('aria-hidden', 'true'); document.body.classList.remove('modal-open');"
->Cancel</button>
-        <button class="button primary" type="submit">Submit test result</button>
-      </div>
-
-      <div class="success-message" id="success-message" role="status">
-        Thanks—this is currently a local preview. Connect a form service or GitHub Issues before relying on it for real submissions.
-      </div>
-    </form>
-  </section>
-</div>
-
-<script>
-  function openModal(id) {
-    const modal = document.getElementById(id);
-
-    if (!modal) {
-      return;
-    }
-
-    modal.classList.add("show");
-    modal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("modal-open");
-  }
-
-  function closeModal(modal) {
-    if (!modal) {
-      return;
-    }
-
-    modal.classList.remove("show");
-    modal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
-  }
-
-  document.addEventListener("click", (event) => {
-    const clickedElement = event.target instanceof Element ? event.target : null;
-
-    if (!clickedElement) {
-      return;
-    }
-
-    const openButton = clickedElement.closest("[data-open]");
-
-    if (openButton) {
-      event.preventDefault();
-      openModal(openButton.dataset.open);
-      return;
-    }
-
-    const closeButton = clickedElement.closest("[data-close]");
-
-    if (closeButton) {
-      event.preventDefault();
-      closeModal(closeButton.closest(".modal"));
-      return;
-    }
-
-    if (clickedElement.classList.contains("modal")) {
-      closeModal(clickedElement);
-    }
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      document.querySelectorAll(".modal.show").forEach((modal) => {
-        closeModal(modal);
-      });
-    }
-  });
-
-  const alphabetButtons = document.querySelectorAll("[data-letter]");
-  const librarySections = document.querySelectorAll("[data-letter-section]");
-  const librarySummary = document.getElementById("library-summary");
-
-  function showLibraryLetter(letter) {
-    librarySections.forEach((section) => {
-      const shouldShow = letter === "all" || section.dataset.letterSection === letter;
-      section.hidden = !shouldShow;
-    });
-
-    if (librarySummary) {
-      librarySummary.textContent = letter === "all"
-        ? "Showing all currently verified reports."
-        : `Showing verified reports beginning with the letter ${letter}.`;
-    }
-  }
-
-  alphabetButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      alphabetButtons.forEach((item) => {
-        item.classList.remove("active");
-      });
-
-      button.classList.add("active");
-      showLibraryLetter(button.dataset.letter);
-    });
-  });
-
-  showLibraryLetter("all");
-</script>
 </body>
 </html>
