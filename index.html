@@ -802,6 +802,73 @@
   outline: none;
 }
   </style>
+
+<style id="penguin-clipper-card-style">
+  #apps-catalog .penguin-clipper-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 280px;
+    padding: 28px;
+    border: 1px solid rgba(94, 234, 212, 0.28);
+    background: #071b25;
+    color: #f1fafc;
+  }
+
+  #apps-catalog .penguin-clipper-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(7, 18, 28, 0.97) 0%,
+        rgba(7, 18, 28, 0.84) 48%,
+        rgba(7, 18, 28, 0.15) 100%
+      ),
+      url("assets/penguin-clipper-card.svg") center / cover no-repeat;
+  }
+
+  #apps-catalog .penguin-clipper-card h3 {
+    max-width: 65%;
+    color: #ffffff;
+  }
+
+  #apps-catalog .penguin-clipper-card p {
+    max-width: 65%;
+    color: #d7e8ed;
+    line-height: 1.65;
+  }
+
+  #apps-catalog .penguin-clipper-card .actions {
+    position: relative;
+    margin-top: 24px;
+  }
+
+  @media (max-width: 520px) {
+    #apps-catalog .penguin-clipper-card {
+      padding: 22px;
+    }
+
+    #apps-catalog .penguin-clipper-card::before {
+      background:
+        linear-gradient(
+          90deg,
+          rgba(7, 18, 28, 0.97),
+          rgba(7, 18, 28, 0.78)
+        ),
+        url("assets/penguin-clipper-card.svg") center / cover no-repeat;
+    }
+
+    #apps-catalog .penguin-clipper-card h3,
+    #apps-catalog .penguin-clipper-card p {
+      max-width: 100%;
+    }
+  }
+</style>
+
 </head>
 
 <body>
@@ -1041,7 +1108,7 @@
       </header>
 
       <div id="apps-catalog" class="game-grid">
-        <article class="game-card">
+        <article class="game-card penguin-clipper-card">
           <h3>Penguin Clipper</h3>
           <p>
             Visit the Penguin Clipper repository for project details,
