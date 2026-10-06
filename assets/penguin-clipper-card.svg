@@ -22,15 +22,15 @@
 
   <rect width="1200" height="600" fill="url(#background)"/>
   <rect width="1200" height="600" fill="url(#grid)"/>
-  <circle cx="910" cy="295" r="320" fill="url(#glow)"/>
+  <circle cx="600" cy="295" r="320" fill="url(#glow)"/>
 
   <g fill="none" stroke="#5eead4" stroke-opacity=".18">
-    <circle cx="920" cy="300" r="225"/>
-    <circle cx="920" cy="300" r="265" stroke-dasharray="8 18"/>
+    <circle cx="600" cy="300" r="225"/>
+    <circle cx="600" cy="300" r="265" stroke-dasharray="8 18"/>
     <path d="M650 510H1160M710 90H1110"/>
   </g>
 
-  <g transform="translate(915 300) rotate(8)">
+  <g transform="translate(600 300) rotate(8)">
     <ellipse cx="0" cy="211" rx="145" ry="22"
              fill="#031019" opacity=".45"/>
 
