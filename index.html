@@ -846,8 +846,8 @@
   Browse game reports →
 </button>
 
-          <button class="button secondary" type="button" disabled title="Contributions will open soon">
-            Contributions opening soon
+          <button class="button secondary" type="button" data-open="apps-modal">
+            Browse apps →
           </button>
         </div>
 
@@ -1017,6 +1017,36 @@
           <span class="badge gray"><span class="dot"></span>Untested</span>
           <h3>Needs a report</h3>
           <p>No current verified Linux or Steam Deck test is available yet.</p>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="apps-modal" aria-hidden="true">
+    <section class="modal-panel"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="apps-title">
+      <header class="modal-header">
+        <div>
+          <p class="eyebrow">HexandRoach apps</p>
+          <h2 id="apps-title">Browse apps</h2>
+          <p>Explore our apps and downloads for supported systems.</p>
+        </div>
+
+        <button class="close-button"
+                type="button"
+                data-close
+                aria-label="Close app catalog">×</button>
+      </header>
+
+      <div id="apps-catalog" class="game-grid">
+        <article class="game-card">
+          <h3>Apps coming soon</h3>
+          <p>
+            No app downloads are listed yet.
+            Check back for releases and installation instructions.
+          </p>
         </article>
       </div>
     </section>
