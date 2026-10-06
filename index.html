@@ -1035,6 +1035,7 @@
       </header>
 
       <form id="test-form">
+       <div id="report-verification" style="margin: 16px 0;"></div>
         <div class="form-grid">
           <div class="field">
             <label for="game-name">Game title</label>
@@ -1102,32 +1103,33 @@
     </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
 
 
   <script>
-  const SUPABASE_URL = "https://izsvaqlveqdaytnzptca.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_5sH3u4mSEcIjMq10D3-whA_NjlpndNf";
+  const REPORTS_API =
+  "https://hexandroach-api.hexandroach.workers.dev/reports";
 
-  let supabaseClient = null;
-
+async function fetchApprovedReports() {
   try {
-    if (
-      typeof supabase !== "undefined" &&
-      SUPABASE_URL &&
-      SUPABASE_ANON_KEY &&
-      !SUPABASE_ANON_KEY.includes("PASTE_YOUR")
-    ) {
-      supabaseClient = supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
-    }
-  } catch (error) {
-    console.error("Supabase setup error:", error);
-  }
+    const response = await fetch(REPORTS_API);
+    const data = await response.json();
 
-  function openModal(id) {
+    if (!response.ok) {
+      throw new Error(data.error || "Could not load reports.");
+    }
+
+    if (!Array.isArray(data.reports)) {
+      throw new Error("Invalid reports response.");
+    }
+
+    return { data: data.reports, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+function openModal(id) {
     const modal = document.getElementById(id);
 
     if (!modal) {
@@ -1286,7 +1288,7 @@
     const librarySectionsContainer = document.getElementById("library-sections");
     const reportsContainer = document.getElementById("community-reports");
 
-    if (!librarySectionsContainer || !reportsContainer || !supabaseClient) {
+    if (!librarySectionsContainer || !reportsContainer) {
       return;
     }
 
@@ -1294,11 +1296,7 @@
       <p class="library-loading">Loading approved community reports…</p>
     `;
 
-    const { data: reports, error } = await supabaseClient
-      .from("game_reports")
-      .select("*")
-      .eq("moderation_status", "approved")
-      .order("game_name", { ascending: true });
+    const { data: reports, error } = await fetchApprovedReports();
 
     if (error) {
       console.error("Could not load approved reports:", error);
@@ -1411,93 +1409,136 @@
   }
 
   const testForm = document.getElementById("test-form");
-  const successMessage = document.getElementById("success-message");
+const successMessage = document.getElementById("success-message");
+const submitModal = document.getElementById("submit-modal");
 
-  if (testForm) {
-    testForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
+let verificationToken = "";
+let verificationWidget = null;
+let submissionInProgress = false;
 
-      const submitButton = testForm.querySelector('button[type="submit"]');
-      const gameName = document.getElementById("game-name").value.trim();
-      const store = document.getElementById("store").value;
-      const distro = document.getElementById("distro").value.trim();
-      const proton = document.getElementById("proton").value.trim();
-      const compatibilityStatus = document.getElementById("status").value;
-      const testedDate = document.getElementById("tested-date").value || null;
-      const launchOptions = document.getElementById("launch-options").value.trim();
-      const notes = document.getElementById("notes").value.trim();
+function showSubmissionMessage(message) {
+  successMessage.textContent = message;
+  successMessage.classList.add("show");
+}
 
-      successMessage.classList.remove("show");
-      successMessage.textContent = "";
-
-      if (!gameName || !store || !compatibilityStatus) {
-        successMessage.textContent =
-          "Please enter a game title, select a store or launcher, and choose a compatibility status.";
-        successMessage.classList.add("show");
-        return;
-      }
-
-      if (!supabaseClient) {
-        successMessage.textContent =
-          "The submission service is not configured. Check the Supabase publishable key.";
-        successMessage.classList.add("show");
-        return;
-      }
-
-      submitButton.disabled = true;
-      submitButton.textContent = "Submitting…";
-
-      try {
-        const { error } = await supabaseClient
-          .from("game_reports")
-          .insert({
-            game_name: gameName,
-            store,
-            distro: distro || null,
-            proton: proton || null,
-            compatibility_status: compatibilityStatus,
-            tested_date: testedDate,
-            launch_options: launchOptions || null,
-            notes: notes || null,
-            moderation_status: "pending"
-          });
-
-        submitButton.disabled = false;
-        submitButton.textContent = "Submit test result";
-
-        if (error) {
-          console.error("Supabase submission error:", error);
-          successMessage.textContent =
-            `Report was not submitted: ${error.message}`;
-          successMessage.classList.add("show");
-          return;
-        }
-
-        successMessage.textContent =
-          "Thanks! Your report was submitted for review.";
-        successMessage.classList.add("show");
-
-        testForm.reset();
-
-        window.setTimeout(() => {
-          closeModal(document.getElementById("submit-modal"));
-        }, 2000);
-      } catch (error) {
-        console.error("Unexpected submission error:", error);
-
-        submitButton.disabled = false;
-        submitButton.textContent = "Submit test result";
-
-        successMessage.textContent =
-          "A network error stopped the submission. Please try again.";
-        successMessage.classList.add("show");
-      }
-    });
+function renderReportVerification() {
+  if (
+    !window.turnstile ||
+    verificationWidget !== null ||
+    !submitModal.classList.contains("show")
+  ) {
+    return;
   }
+
+  verificationWidget = window.turnstile.render(
+    "#report-verification",
+    {
+      sitekey: "0x4AAAAAAFO5DjY0YeoDb-SG",
+      action: "game_report",
+      theme: "auto",
+      callback: (token) => {
+        verificationToken = token;
+      },
+      "expired-callback": () => {
+        verificationToken = "";
+      },
+      "error-callback": () => {
+        verificationToken = "";
+        showSubmissionMessage(
+          "Verification could not load. Please retry or reload the page."
+        );
+      }
+    }
+  );
+}
+
+window.onReportTurnstileLoaded = renderReportVerification;
+
+new MutationObserver(renderReportVerification).observe(
+  submitModal,
+  { attributes: true, attributeFilter: ["class"] }
+);
+
+testForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (submissionInProgress) return;
+
+  successMessage.classList.remove("show");
+  successMessage.textContent = "";
+
+  if (!verificationToken) {
+    showSubmissionMessage(
+      "Please complete the verification before submitting."
+    );
+    return;
+  }
+
+  const submitButton = testForm.querySelector('button[type="submit"]');
+  const originalButtonText = submitButton.textContent;
+  const field = (id) => document.getElementById(id).value.trim();
+
+  const payload = {
+    game_name: field("game-name"),
+    store: field("store"),
+    distro: field("distro") || null,
+    proton: field("proton") || null,
+    compatibility_status: field("status"),
+    tested_date: field("tested-date") || null,
+    launch_options: field("launch-options") || null,
+    notes: field("notes") || null,
+    turnstile_token: verificationToken
+  };
+
+  submissionInProgress = true;
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting…";
+
+  try {
+    const response = await fetch(REPORTS_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || data.success !== true) {
+      throw new Error(data.error || "Your report was not accepted.");
+    }
+
+    testForm.reset();
+    showSubmissionMessage(
+      "Thanks! Your report was submitted for review. " +
+      "It will appear publicly after approval."
+    );
+  } catch (error) {
+    console.error("Report submission failed:", error);
+    showSubmissionMessage(
+      error instanceof TypeError
+        ? "Could not confirm submission. Check your connection before retrying."
+        : error.message
+    );
+  } finally {
+    submissionInProgress = false;
+    submitButton.disabled = false;
+    submitButton.textContent = originalButtonText;
+    verificationToken = "";
+
+    if (window.turnstile && verificationWidget !== null) {
+      window.turnstile.reset(verificationWidget);
+    }
+  }
+});
+
 
   refreshAlphabetButtons();
   showLibraryLetter("all");
   loadApprovedGameReports();
 </script>
+<script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onReportTurnstileLoaded&amp;render=explicit"
+  async defer
+></script>
 </body>
 </html>
