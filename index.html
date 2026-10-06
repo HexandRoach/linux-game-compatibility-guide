@@ -869,6 +869,47 @@
   }
 </style>
 
+
+<style id="rhex-fish-card-style">
+  #apps-catalog #rhex-app-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 280px;
+    padding: 28px;
+    background: #061525;
+    border: 1px solid rgba(103, 232, 249, 0.3);
+    color: #f0fbff;
+  }
+
+  #apps-catalog #rhex-app-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        rgba(6, 21, 37, 0.58),
+        rgba(6, 21, 37, 0.82)
+      ),
+      url("assets/rhex-fish-card.svg") center / cover no-repeat;
+  }
+
+  #apps-catalog #rhex-app-card h3 {
+    color: #ffffff;
+  }
+
+  #apps-catalog #rhex-app-card p {
+    color: #e0f2fe;
+    line-height: 1.65;
+  }
+
+  #apps-catalog #rhex-app-card .actions {
+    margin-top: 24px;
+  }
+</style>
+
 </head>
 
 <body>

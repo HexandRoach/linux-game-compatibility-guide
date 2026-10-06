@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+    width="1200" height="600" viewBox="0 0 1200 600">
+  <defs>
+    <linearGradient id="sea" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#061525"/>
+      <stop offset="1" stop-color="#103c50"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="scales" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a7f3d0"/>
+      <stop offset=".45" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="fins" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5eead4"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="600" fill="url(#sea)"/>
+  <ellipse cx="600" cy="300" rx="380" ry="280" fill="url(#glow)"/>
+
+  <g fill="none" stroke="#67e8f9" stroke-opacity=".13">
+    <path d="M0 440Q300 360 600 440T1200 440"/>
+    <path d="M0 480Q300 400 600 480T1200 480"/>
+    <circle cx="600" cy="300" r="225"/>
+  </g>
+
+  <g transform="translate(600 300)">
+    <path d="M125 0L255-112L232 0L255 112Z"
+          fill="url(#fins)" stroke="#67e8f9" stroke-width="3"/>
+    <path d="M-45-70Q12-185 100-85L42-44Z"
+          fill="url(#fins)"/>
+    <path d="M-28 65Q32 152 110 78L40 40Z"
+          fill="url(#fins)"/>
+
+    <path d="M-205 0Q-116-139 36-94Q110-77 155 0
+             Q110 77 36 94Q-116 139-205 0Z"
+          fill="url(#scales)" stroke="#a5f3fc" stroke-width="3"/>
+
+    <g fill="none" stroke="#075985" stroke-width="4" opacity=".38">
+      <path d="M-42-70Q-6-35-42 0Q-6 35-42 70"/>
+      <path d="M6-77Q42-39 6 0Q42 39 6 77"/>
+      <path d="M54-61Q88-30 54 0Q88 30 54 61"/>
+      <path d="M100-37Q123-18 100 0Q123 18 100 37"/>
+      <path d="M-105-57Q-66 0-105 57"/>
+    </g>
+
+    <path d="M-22 6Q30-13 66 42Q9 54-22 6Z"
+          fill="#0891b2" stroke="#67e8f9" stroke-width="2"/>
+
+    <circle cx="-135" cy="-20" r="20" fill="#e0faff"/>
+    <circle cx="-138" cy="-20" r="12" fill="#071827"/>
+    <circle cx="-142" cy="-25" r="4" fill="#fff"/>
+    <path d="M-195 12L-176 8"
+          stroke="#075985" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <g fill="none" stroke="#a5f3fc" stroke-width="2" opacity=".35">
+    <circle cx="310" cy="250" r="10"/>
+    <circle cx="280" cy="195" r="17"/>
+    <circle cx="320" cy="130" r="7"/>
+    <circle cx="920" cy="380" r="13"/>
+    <circle cx="955" cy="325" r="7"/>
+  </g>
+</svg>
