@@ -1,0 +1,10 @@
+{
+  "name": "Nimvex",
+  "description": "A lightweight Qt-based browser for Linux, designed for gaming, streaming, and straightforward everyday browsing.",
+  "version": "0.1.0-4",
+  "updated": "2026-10-15",
+  "platform": "Fedora Linux",
+  "default_search": "Google",
+  "rpm_url": "",
+  "release_url": ""
+}

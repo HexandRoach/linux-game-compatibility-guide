@@ -801,7 +801,17 @@
   box-shadow: 0 0 0 3px rgba(169, 121, 255, 0.18);
   outline: none;
 }
-  </style>
+  
+  .project-release {
+    margin: 36px 0;
+    padding: 24px;
+    border: 1px solid rgba(194, 179, 255, .18);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .03);
+  }
+  .project-release h2 { margin-top: 0; }
+  .project-release a { color: #37ead9; }
+</style>
 
 <style id="penguin-clipper-card-style">
   #apps-catalog .penguin-clipper-card {
@@ -970,7 +980,18 @@
       <span>© 2026 HexandRoach · <a href="LICENSE">MIT Licensed</a></span>
       <span>Reports can change after game, Proton, driver, launcher, or anti-cheat updates.</span>
     </footer>
-  </main>
+  
+  <section id="nimvex-project" class="project-release">
+    <h2>Nimvex</h2>
+    <p>A lightweight Qt-based browser for Linux, designed for gaming, streaming, and simple everyday browsing.</p>
+    <p><strong>Latest release:</strong> <span id="nimvex-version">Loading…</span><br>
+       <strong>Updated:</strong> <span id="nimvex-updated">Loading…</span></p>
+    <p>
+      <a id="nimvex-rpm" href="#" rel="noopener">Download RPM</a> ·
+      <a id="nimvex-release" href="#" rel="noopener">View release</a>
+    </p>
+  </section>
+</main>
 
        <div class="modal" id="library-modal" aria-hidden="true">
     <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="library-title">
@@ -1713,5 +1734,20 @@ testForm.addEventListener("submit", async (event) => {
   src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onReportTurnstileLoaded&amp;render=explicit"
   async defer
 ></script>
+
+  <script>
+    fetch('/data/projects/nimvex.json')
+      .then((response) => response.json())
+      .then((data) => {
+        document.getElementById('nimvex-version').textContent = data.version;
+        document.getElementById('nimvex-updated').textContent = data.updated;
+        document.getElementById('nimvex-rpm').href = data.rpm_url;
+        document.getElementById('nimvex-release').href = data.release_url;
+      })
+      .catch(() => {
+        document.getElementById('nimvex-version').textContent = 'Unavailable';
+        document.getElementById('nimvex-updated').textContent = 'Unavailable';
+      });
+  </script>
 </body>
 </html>
