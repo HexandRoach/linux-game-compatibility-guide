@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Community-tested Linux and Steam Deck game compatibility reports, Proton and Wine settings, launch options, anti-cheat notes, and practical fixes.">
+  <meta name="description" content="Community-tested Linux and Steam Deck game compatibility reports, Proton and Wine settings, practical fixes, and HexandRoach apps and downloads.">
   <title>HexandRoach Compatibility Guide — Linux & Steam Deck Games</title>
 
   <style>
@@ -981,16 +981,7 @@
       <span>Reports can change after game, Proton, driver, launcher, or anti-cheat updates.</span>
     </footer>
   
-  <section id="nimvex-project" class="project-release">
-    <h2>Nimvex</h2>
-    <p>A lightweight Qt-based browser for Linux, designed for gaming, streaming, and simple everyday browsing.</p>
-    <p><strong>Latest release:</strong> <span id="nimvex-version">Loading…</span><br>
-       <strong>Updated:</strong> <span id="nimvex-updated">Loading…</span></p>
-    <p>
-      <a id="nimvex-rpm" href="#" rel="noopener">Download RPM</a> ·
-      <a id="nimvex-release" href="#" rel="noopener">View release</a>
-    </p>
-  </section>
+  
 </main>
 
        <div class="modal" id="library-modal" aria-hidden="true">
@@ -1170,6 +1161,34 @@
       </header>
 
       <div id="apps-catalog" class="game-grid">
+      <article class="game-card" id="nimvex-app-card">
+        <h3>Nimvex</h3>
+        <p>
+          <span id="nimvex-version">Version loading…</span> ·
+          RPM · Fedora Linux<br>
+          A lightweight Qt-based browser designed for gaming, streaming,
+          and simple everyday browsing.
+        </p>
+        <div class="actions">
+          <a
+            class="button"
+            id="nimvex-rpm"
+            href="#"
+            rel="noopener"
+          >
+            Download RPM →
+          </a>
+          <a
+            class="button secondary"
+            id="nimvex-release"
+            href="#"
+            rel="noopener"
+          >
+            View release
+          </a>
+        </div>
+      </article>
+
         <article class="game-card" id="rhex-app-card">
           <h3>RHex</h3>
           <p>Version 0.7.0-alpha.4 · AppImage · amd64</p>
@@ -1739,7 +1758,7 @@ testForm.addEventListener("submit", async (event) => {
     fetch('/data/projects/nimvex.json')
       .then((response) => response.json())
       .then((data) => {
-        document.getElementById('nimvex-version').textContent = data.version;
+        document.getElementById('nimvex-version').textContent = `Version ${data.version}`;
         document.getElementById('nimvex-updated').textContent = data.updated;
         document.getElementById('nimvex-rpm').href = data.rpm_url;
         document.getElementById('nimvex-release').href = data.release_url;
