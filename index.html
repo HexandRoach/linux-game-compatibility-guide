@@ -1160,77 +1160,8 @@
                 aria-label="Close app catalog">×</button>
       </header>
 
-      <div id="apps-catalog" class="game-grid">
-      <article class="game-card" id="nimvex-app-card">
-        <h3>Nimvex</h3>
-        <p>
-          <span id="nimvex-version">Version loading…</span> ·
-          RPM · Fedora Linux<br>
-          A lightweight Qt-based browser designed for gaming, streaming,
-          and simple everyday browsing.
-        </p>
-        <div class="actions">
-          <a
-            class="button"
-            id="nimvex-rpm"
-            href="#"
-            rel="noopener"
-          >
-            Download RPM →
-          </a>
-          <a
-            class="button secondary"
-            id="nimvex-release"
-            href="#"
-            rel="noopener"
-          >
-            View release
-          </a>
-        </div>
-      </article>
-
-        <article class="game-card" id="rhex-app-card">
-          <h3>RHex</h3>
-          <p>Version 0.7.0-alpha.4 · AppImage · amd64</p>
-          <p>
-            Alpha release. Review the release notes before downloading.
-          </p>
-
-          <div class="actions">
-            <a class="button primary"
-               href="https://github.com/HexandRoach/rhex-releases/releases/download/v0.7.0-alpha.4/rhex_0.7.0-alpha.4_amd64.AppImage">
-              Download AppImage →
-            </a>
-            <a class="button secondary"
-               href="https://github.com/HexandRoach/rhex-releases/releases/tag/v0.7.0-alpha.4"
-               target="_blank"
-               rel="noopener noreferrer">
-              Release notes
-            </a>
-          </div>
-        </article>
-
-        <article class="game-card penguin-clipper-card">
-          <h3>Penguin Clipper</h3>
-          <p>Version 0.1.1 · RPM package · x86_64</p>
-          <p>
-            Visit the Penguin Clipper repository for project details,
-            installation information, and available downloads.
-          </p>
-
-          <div class="actions">
-            <a class="button primary"
-               href="https://github.com/HexandRoach/penguin-clipper/releases/download/v0.1.1/Penguin.Clipping-0.1.1-1.x86_64.rpm">
-              Download RPM →
-            </a>
-            <a class="button secondary"
-               href="https://github.com/HexandRoach/penguin-clipper"
-               target="_blank"
-               rel="noopener noreferrer">
-              View project
-            </a>
-          </div>
-        </article>
+      <div id="apps-catalog" class="game-grid" aria-live="polite">
+        <p class="library-loading">Loading HexandRoach apps…</p>
       </div>
     </section>
   </div>
@@ -1754,19 +1685,36 @@ testForm.addEventListener("submit", async (event) => {
   async defer
 ></script>
 
+  
+
   <script>
-    fetch('/data/projects/nimvex.json')
-      .then((response) => response.json())
-      .then((data) => {
-        document.getElementById('nimvex-version').textContent = `Version ${data.version}`;
-        document.getElementById('nimvex-updated').textContent = data.updated;
-        document.getElementById('nimvex-rpm').href = data.rpm_url;
-        document.getElementById('nimvex-release').href = data.release_url;
-      })
-      .catch(() => {
-        document.getElementById('nimvex-version').textContent = 'Unavailable';
-        document.getElementById('nimvex-updated').textContent = 'Unavailable';
-      });
+    async function loadHexandRoachApps() {
+      const catalog = document.getElementById('apps-catalog');
+      if (!catalog) return;
+      try {
+        const index = await (await fetch('/data/projects/index.json')).json();
+        const projects = await Promise.all(index.projects.map(async slug =>
+          await (await fetch(`/data/projects/${slug}.json`)).json()
+        ));
+        catalog.innerHTML = projects.map(project => {
+          const download = project.download_url
+            ? `<a class="button" href="${project.download_url}" rel="noopener">Download ${project.download_label} →</a>`
+            : `<span class="button secondary">Download coming soon</span>`;
+          const release = project.release_url
+            ? `<a class="button secondary" href="${project.release_url}" rel="noopener">View release</a>`
+            : `<a class="button secondary" href="${project.repository_url}" rel="noopener">View project</a>`;
+          return `<article class="${project.card_class}" id="${project.card_id}">
+            <h3>${project.name}</h3>
+            <p>Version ${project.version} · ${project.download_label} · ${project.platform}<br>${project.description}</p>
+            <div class="actions">${download}${release}</div>
+          </article>`;
+        }).join('');
+      } catch (error) {
+        console.error(error);
+        catalog.innerHTML = '<p class="library-loading">HexandRoach apps could not be loaded right now.</p>';
+      }
+    }
+    loadHexandRoachApps();
   </script>
 </body>
 </html>

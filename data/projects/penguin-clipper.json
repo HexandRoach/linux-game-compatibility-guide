@@ -1,0 +1,13 @@
+{
+  "name": "Penguin Clipper",
+  "description": "Early testing builds of Penguin Clipper for Linux.",
+  "version": "0.1.1",
+  "updated": "2026-08-26",
+  "platform": "Fedora Linux",
+  "download_label": "RPM",
+  "download_url": "https://github.com/HexandRoach/penguin-clipper/releases/download/v0.1.1/Penguin.Clipping-0.1.1-1.x86_64.rpm",
+  "release_url": "https://github.com/HexandRoach/penguin-clipper/releases/tag/v0.1.1",
+  "repository_url": "https://github.com/HexandRoach/penguin-clipper",
+  "card_id": "penguin-clipper-card",
+  "card_class": "game-card penguin-clipper-card"
+}

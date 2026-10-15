@@ -1,0 +1,13 @@
+{
+  "name": "RHex",
+  "description": "RHex is available as an AppImage for Linux.",
+  "version": "0.7.0-alpha.9",
+  "updated": "2026-10-09",
+  "platform": "Linux · amd64",
+  "download_label": "AppImage",
+  "download_url": "https://github.com/HexandRoach/rhex-releases/releases/download/v0.7.0-alpha.9/rhex_0.7.0-alpha.9_amd64.AppImage",
+  "release_url": "https://github.com/HexandRoach/rhex-releases/releases/tag/v0.7.0-alpha.9",
+  "repository_url": "https://github.com/HexandRoach/rhex-releases",
+  "card_id": "rhex-app-card",
+  "card_class": "game-card"
+}
